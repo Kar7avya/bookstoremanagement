@@ -1,0 +1,38 @@
+
+services:
+  backend:
+    build:
+      context: D:\vscode\hospitalmanagement\mern-project-backend  # Path to the backend folder
+      dockerfile: D:\vscode\hospitalmanagement\mern-project-backend\Dockerfile  # Dockerfile for the backend
+    ports:
+      - "4000:4000"  # Expose backend port 4000
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://db:27017/mydatabase  # MongoDB connection URI
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context:  D:\vscode\hospitalmanagement\mern-project-frontend # Path to the frontend folder
+      dockerfile: D:\vscode\hospitalmanagement\mern-project-frontend\Dockerfile  # Dockerfile for the frontend
+    ports:
+      - "3000:3000"  # Expose frontend port 3000
+    environment:
+      - REACT_APP_API_URL=http://backend:4000  # URL for the backend API
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+
+  db:
+    image: mongo  # Use the official MongoDB image
+    ports:
+      - "27017:27017"  # Expose MongoDB port 27017
+    volumes:
+      - mongo-data:/data/db  # Volume for MongoDB data persistence
+
+volumes:
+  mongo-data:
